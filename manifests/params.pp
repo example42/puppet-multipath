@@ -17,11 +17,11 @@ class multipath::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    default => 'multipath',
+    default => 'device-mapper-multipath',
   }
 
   $service = $::operatingsystem ? {
-    default => 'multipath',
+    default => 'multipathd',
   }
 
   $service_status = $::operatingsystem ? {
@@ -29,7 +29,7 @@ class multipath::params {
   }
 
   $process = $::operatingsystem ? {
-    default => 'multipath',
+    default => 'multipathd',
   }
 
   $process_args = $::operatingsystem ? {
@@ -37,7 +37,7 @@ class multipath::params {
   }
 
   $process_user = $::operatingsystem ? {
-    default => 'multipath',
+    default => 'root',
   }
 
   $config_dir = $::operatingsystem ? {
@@ -66,7 +66,7 @@ class multipath::params {
   }
 
   $pid_file = $::operatingsystem ? {
-    default => '/var/run/multipath.pid',
+    default => '/var/run/multipathd.pid',
   }
 
   $data_dir = $::operatingsystem ? {
@@ -74,15 +74,15 @@ class multipath::params {
   }
 
   $log_dir = $::operatingsystem ? {
-    default => '/var/log/multipath',
+    default => '/var/log/',
   }
 
   $log_file = $::operatingsystem ? {
-    default => '/var/log/multipath/multipath.log',
+    default => '/var/log/messages',
   }
 
-  $port = '42'
-  $protocol = 'tcp'
+  $port = ''
+  $protocol = ''
 
   # General Settings
   $my_class = ''
