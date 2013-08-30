@@ -7,7 +7,7 @@ describe 'multipath' do
   let(:facts) { { :ipaddress => '10.42.42.42' } }
 
   describe 'Test standard installation' do
-    it { should contain_package('multipath').with_ensure('present') }
+    it { should contain_package('device-mapper-multipath').with_ensure('present') }
     it { should contain_service('multipath').with_ensure('running') }
     it { should contain_service('multipath').with_enable('true') }
     it { should contain_file('multipath.conf').with_ensure('present') }
@@ -15,12 +15,12 @@ describe 'multipath' do
 
   describe 'Test installation of a specific version' do
     let(:params) { {:version => '1.0.42' } }
-    it { should contain_package('multipath').with_ensure('1.0.42') }
+    it { should contain_package('device-mapper-multipath').with_ensure('1.0.42') }
   end
 
   describe 'Test standard installation with monitoring and firewalling' do
     let(:params) { {:monitor => true , :firewall => true, :port => '42', :protocol => 'tcp' } }
-    it { should contain_package('multipath').with_ensure('present') }
+    it { should contain_package('device-mapper-multipath').with_ensure('present') }
     it { should contain_service('multipath').with_ensure('running') }
     it { should contain_service('multipath').with_enable('true') }
     it { should contain_file('multipath.conf').with_ensure('present') }
@@ -30,7 +30,7 @@ describe 'multipath' do
 
   describe 'Test decommissioning - absent' do
     let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
-    it 'should remove Package[multipath]' do should contain_package('multipath').with_ensure('absent') end
+    it 'should remove Package[multipath]' do should contain_package('device-mapper-multipath').with_ensure('absent') end
     it 'should stop Service[multipath]' do should contain_service('multipath').with_ensure('stopped') end
     it 'should not enable at boot Service[multipath]' do should contain_service('multipath').with_enable('false') end
     it 'should remove multipath configuration file' do should contain_file('multipath.conf').with_ensure('absent') end
@@ -40,7 +40,7 @@ describe 'multipath' do
 
   describe 'Test decommissioning - disable' do
     let(:params) { {:disable => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
-    it { should contain_package('multipath').with_ensure('present') }
+    it { should contain_package('device-mapper-multipath').with_ensure('present') }
     it 'should stop Service[multipath]' do should contain_service('multipath').with_ensure('stopped') end
     it 'should not enable at boot Service[multipath]' do should contain_service('multipath').with_enable('false') end
     it { should contain_file('multipath.conf').with_ensure('present') }
@@ -50,7 +50,7 @@ describe 'multipath' do
 
   describe 'Test decommissioning - disableboot' do
     let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
-    it { should contain_package('multipath').with_ensure('present') }
+    it { should contain_package('device-mapper-multipath').with_ensure('present') }
     it { should_not contain_service('multipath').with_ensure('present') }
     it { should_not contain_service('multipath').with_ensure('absent') }
     it 'should not enable at boot Service[multipath]' do should contain_service('multipath').with_enable('false') end
@@ -61,7 +61,7 @@ describe 'multipath' do
 
   describe 'Test noops mode' do
     let(:params) { {:noops => true, :monitor => true , :firewall => true, :port => '42', :protocol => 'tcp'} }
-    it { should contain_package('multipath').with_noop('true') }
+    it { should contain_package('device-mapper-multipath').with_noop('true') }
     it { should contain_service('multipath').with_noop('true') }
     it { should contain_file('multipath.conf').with_noop('true') }
     it { should contain_monitor__process('multipath_process').with_noop('true') }
@@ -127,30 +127,6 @@ describe 'multipath' do
     it { should contain_monitor__process('multipath_process').with_tool('puppi') }
     it { should contain_firewall('multipath_tcp_42').with_tool('iptables') }
     it { should contain_puppi__ze('multipath').with_ensure('present') }
-  end
-
-  describe 'Test params lookup' do
-    let(:facts) { { :monitor => true , :ipaddress => '10.42.42.42' } }
-    let(:params) { { :port => '42' } }
-    it 'should honour top scope global vars' do should contain_monitor__process('multipath_process').with_enable('true') end
-  end
-
-  describe 'Test params lookup' do
-    let(:facts) { { :multipath_monitor => true , :ipaddress => '10.42.42.42' } }
-    let(:params) { { :port => '42' } }
-    it 'should honour module specific vars' do should contain_monitor__process('multipath_process').with_enable('true') end
-  end
-
-  describe 'Test params lookup' do
-    let(:facts) { { :monitor => false , :multipath_monitor => true , :ipaddress => '10.42.42.42' } }
-    let(:params) { { :port => '42' } }
-    it 'should honour top scope module specific over global vars' do should contain_monitor__process('multipath_process').with_enable('true') end
-  end
-
-  describe 'Test params lookup' do
-    let(:facts) { { :monitor => false , :ipaddress => '10.42.42.42' } }
-    let(:params) { { :monitor => true , :firewall => true, :port => '42' } }
-    it 'should honour passed params over global vars' do should contain_monitor__process('multipath_process').with_enable('true') end
   end
 
 end
