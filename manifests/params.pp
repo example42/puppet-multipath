@@ -17,15 +17,18 @@ class multipath::params {
   ### Application related parameters
 
   $package = $::operatingsystem ? {
-    default => 'device-mapper-multipath',
+    /(?i:Debian|Ubuntu|Mint)/ => 'multipath-tools',
+    default                   => 'device-mapper-multipath',
   }
 
   $service = $::operatingsystem ? {
-    default => 'multipathd',
+    /(?i:Debian|Ubuntu|Mint)/ => 'multipath-tools',
+    default                   => 'multipathd',
   }
 
   $service_status = $::operatingsystem ? {
-    default => true,
+    /(?i:Debian|Ubuntu|Mint)/ => false,
+    default                   => true,
   }
 
   $process = $::operatingsystem ? {
@@ -45,7 +48,8 @@ class multipath::params {
   }
 
   $config_file = $::operatingsystem ? {
-    default => '/etc/multipath/multipath.conf',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/multipath.conf',
+    default                   => '/etc/multipath/multipath.conf',
   }
 
   $config_file_mode = $::operatingsystem ? {
@@ -61,7 +65,7 @@ class multipath::params {
   }
 
   $config_file_init = $::operatingsystem ? {
-    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/multipath',
+    /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/multipath-tools',
     default                   => '/etc/sysconfig/multipath',
   }
 
