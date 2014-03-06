@@ -424,6 +424,12 @@ class multipath (
         enable   => $multipath::manage_monitor,
         noop     => $multipath::noops,
       }
+      monitor::plugin { 'multipath_plugin':
+        plugin    => 'check_multipath',
+        tool      => $multipath::monitor_tool,
+        enable    => $multipath::manage_monitor,
+        noop      => $multipath::noops,
+      }
     }
   }
 
