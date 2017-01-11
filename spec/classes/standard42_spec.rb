@@ -7,6 +7,7 @@ describe 'multipath' do
   let(:facts) { { :ipaddress => '10.42.42.42' } }
 
   describe 'Test standard installation' do
+    it { should compile.with_all_deps }
     it { should contain_package('device-mapper-multipath').with_ensure('present') }
     it { should contain_service('multipath').with_ensure('running') }
     it { should contain_service('multipath').with_enable('true') }

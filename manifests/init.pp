@@ -334,10 +334,15 @@ class multipath (
     default   => template($multipath::template),
   }
 
+  $manage_noops = $multipath::noops ? {
+    ''      => undef,
+    default => $multipath::noops,
+  }
+
   ### Managed resources
   package { $multipath::package:
     ensure  => $multipath::manage_package,
-    noop    => $multipath::noops,
+    noop    => $multipath::manage_noops,
   }
 
   service { 'multipath':
@@ -347,7 +352,7 @@ class multipath (
     hasstatus  => $multipath::service_status,
     pattern    => $multipath::process,
     require    => Package[$multipath::package],
-    noop       => $multipath::noops,
+    noop       => $multipath::manage_noops,
   }
 
   file { 'multipath.conf':
@@ -362,11 +367,11 @@ class multipath (
     content => $multipath::manage_file_content,
     replace => $multipath::manage_file_replace,
     audit   => $multipath::manage_audit,
-    noop    => $multipath::noops,
+    noop    => $multipath::manage_noops,
   }
 
   # The whole multipath configuration directory can be recursively overriden
-  if $multipath::source_dir {
+  if $multipath::source_dir != '' {
     file { 'multipath.dir':
       ensure  => directory,
       path    => $multipath::config_dir,
@@ -378,7 +383,7 @@ class multipath (
       force   => $multipath::bool_source_dir_purge,
       replace => $multipath::manage_file_replace,
       audit   => $multipath::manage_audit,
-      noop    => $multipath::noops,
+      noop    => $multipath::manage_noops,
     }
   }
 
@@ -396,7 +401,7 @@ class multipath (
       ensure    => $multipath::manage_file,
       variables => $classvars,
       helper    => $multipath::puppi_helper,
-      noop      => $multipath::noops,
+      noop      => $multipath::manage_noops,
     }
   }
 
@@ -410,7 +415,7 @@ class multipath (
         target   => $multipath::monitor_target,
         tool     => $multipath::monitor_tool,
         enable   => $multipath::manage_monitor,
-        noop     => $multipath::noops,
+        noop     => $multipath::manage_noops,
       }
     }
     if $multipath::service != '' {
@@ -422,13 +427,13 @@ class multipath (
         argument => $multipath::process_args,
         tool     => $multipath::monitor_tool,
         enable   => $multipath::manage_monitor,
-        noop     => $multipath::noops,
+        noop     => $multipath::manage_noops,
       }
       monitor::plugin { 'multipath_plugin':
         plugin    => 'check_multipath',
         tool      => $multipath::monitor_tool,
         enable    => $multipath::manage_monitor,
-        noop      => $multipath::noops,
+        noop      => $multipath::manage_noops,
       }
     }
   }
@@ -445,7 +450,7 @@ class multipath (
       direction   => 'input',
       tool        => $multipath::firewall_tool,
       enable      => $multipath::manage_firewall,
-      noop        => $multipath::noops,
+      noop        => $multipath::manage_noops,
     }
   }
 
@@ -459,7 +464,7 @@ class multipath (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $multipath::noops,
+      noop    => $multipath::manage_noops,
     }
   }
 
