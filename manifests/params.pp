@@ -49,6 +49,7 @@ class multipath::params {
 
   $config_file = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => '/etc/multipath.conf',
+    /(?i:RedHat|CentOS)/      => '/etc/multipath.conf',
     default                   => '/etc/multipath/multipath.conf',
   }
 
