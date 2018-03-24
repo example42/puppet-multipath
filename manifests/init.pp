@@ -389,7 +389,7 @@ class multipath (
 
 
   ### Include custom class if $my_class is set
-  if $multipath::my_class {
+  if $multipath::my_class and $multipath::my_class != '' {
     include $multipath::my_class
   }
 
